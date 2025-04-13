@@ -51,6 +51,22 @@ public class RecipeCompilerTest {
   }
 
   @Test
+  public void testCompileWithByteSizeAndTimeDuration() throws Exception {
+    String recipe = "aggregateSizeAndTime :input :output 20MB 15s;";
+    CompileStatus status = compiler.compile(recipe);
+    Assert.assertTrue(status.isSuccess());
+    Assert.assertEquals(1, status.getSymbols().size());
+  }
+
+  @Test
+  public void testCompileInvalidTimeDuration() throws Exception {
+    String recipe = "aggregateSizeAndTime :input :output 5MB 15xyz;"; // invalid time unit
+
+    CompileStatus status = compiler.compile(recipe);
+    Assert.assertFalse(status.isSuccess());
+  } 
+
+  @Test
   public void testMacroSkippingDuringParsing() throws Exception {
     String[] recipe = new String[] {
       "parse-as-csv :body ',' true;",

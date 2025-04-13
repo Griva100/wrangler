@@ -75,4 +75,25 @@ public class GrammarBasedParserTest {
     Assert.assertEquals(0, directives.size());
   }
 
+  @Test
+  public void testByteSizeAndTimeDurationParsing() throws Exception {
+    String[] recipe = new String[] {
+      "aggregateSizeAndTime :col1 :col2 :targetSize :targetTime 'KB' 'min' 'sum';"
+    };
+
+    RecipeParser parser = TestingRig.parse(recipe);
+    List<Directive> directives = parser.parse();
+    Assert.assertEquals(1, directives.size());
+  }
+
+  @Test(expected = Exception.class)
+  public void testInvalidByteSizeParsing() throws Exception {
+    String[] recipe = new String[] {
+      "aggregateSizeAndTime :col1 :col2 :targetSize :targetTime 'XY' 'min' 'sum';" // invalid unit 'XY'
+    };
+
+    RecipeParser parser = TestingRig.parse(recipe);
+    parser.parse(); // should throw
+  }
+
 }
